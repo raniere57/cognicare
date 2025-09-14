@@ -88,9 +88,17 @@
     }
     </script>
     
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="images/CogniCare Pro.webp" as="image">
+    <link rel="preload" href="https://www.googletagmanager.com/gtag/js?id=AW-17539368572" as="script">
 </head>
 <body>
     <!-- Header -->
@@ -140,7 +148,7 @@
                 </div>
                 <div class="hero-image">
                     <a href="https://1caa6dp7s7w17v87r6yhp-67c5.hop.clickbank.net" target="_blank" class="hero-image-link">
-                        <img src="images/CogniCare Pro.webp" alt="CogniCare Pro Supplement Bottle - Memory and Brain Health Pills" class="product-image">
+                        <img src="images/CogniCare Pro.webp" alt="CogniCare Pro Supplement Bottle - Memory and Brain Health Pills" class="product-image" loading="eager">
                     </a>
                 </div>
             </div>
@@ -192,37 +200,37 @@
             
             <div class="ingredients-grid">
                 <div class="ingredient-card">
-                    <img src="images/i-green-coffee.jpg" alt="Green Coffee Bean Extract for CogniCare Pro Memory Supplement" class="ingredient-image">
+                    <img src="images/i-green-coffee.jpg" alt="Green Coffee Bean Extract for CogniCare Pro Memory Supplement" class="ingredient-image" loading="lazy">
                     <h3>Green Coffee Bean</h3>
                     <p>Supports mental response time and provides natural antioxidants for CogniCare Pro brain health.</p>
                 </div>
                 
                 <div class="ingredient-card">
-                    <img src="images/i-tyrosine.jpg" alt="L-Tyrosine Amino Acid in CogniCare Pro Cognitive Supplement" class="ingredient-image">
+                    <img src="images/i-tyrosine.jpg" alt="L-Tyrosine Amino Acid in CogniCare Pro Cognitive Supplement" class="ingredient-image" loading="lazy">
                     <h3>L-Tyrosine</h3>
                     <p>Improves cognitive function and helps in neurotransmitter production for better memory.</p>
                 </div>
                 
                 <div class="ingredient-card">
-                    <img src="images/i-theobromine.jpg" alt="Theobromine Natural Compound in CogniCare Pro Pills" class="ingredient-image">
+                    <img src="images/i-theobromine.jpg" alt="Theobromine Natural Compound in CogniCare Pro Pills" class="ingredient-image" loading="lazy">
                     <h3>Theobromine</h3>
                     <p>Support for optimal concentration, attention and memory enhancement.</p>
                 </div>
                 
                 <div class="ingredient-card">
-                    <img src="images/i-bacopa.jpg" alt="Bacopa Monnieri Herb for CogniCare Pro Brain Function" class="ingredient-image">
+                    <img src="images/i-bacopa.jpg" alt="Bacopa Monnieri Herb for CogniCare Pro Brain Function" class="ingredient-image" loading="lazy">
                     <h3>Bacopa Monnieri</h3>
                     <p>Reduces occasional anxiety and improves cognitive function naturally.</p>
                 </div>
                 
                 <div class="ingredient-card">
-                    <img src="images/i-rhodiola.jpg" alt="Rhodiola Root Adaptogen in CogniCare Pro Memory Supplement" class="ingredient-image">
+                    <img src="images/i-rhodiola.jpg" alt="Rhodiola Root Adaptogen in CogniCare Pro Memory Supplement" class="ingredient-image" loading="lazy">
                     <h3>Rhodiola Root</h3>
                     <p>Protects brain against oxidative stress and improves mental resilience.</p>
                 </div>
                 
                 <div class="ingredient-card">
-                    <img src="images/i-huperzia.jpg" alt="Huperzia Serrata Plant Extract for CogniCare Pro Cognitive Health" class="ingredient-image">
+                    <img src="images/i-huperzia.jpg" alt="Huperzia Serrata Plant Extract for CogniCare Pro Cognitive Health" class="ingredient-image" loading="lazy">
                     <h3>Huperzia Serrata</h3>
                     <p>Supports overall cognitive health and mental well-being naturally.</p>
                 </div>
@@ -585,7 +593,7 @@
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 CogniCare Pro Review. All rights reserved.</p>
-                <p><strong>Keywords:</strong> CogniCare Pro, CogniCare Pro review, buy CogniCare Pro, CogniCare Pro legit, CogniCare Pro 2025, CogniCare Pro memory, CogniCare Pro brain, CogniCare Pro pills, CogniCare Pro price, CogniCare Pro dosage</p>
+                <p style="font-size: 10px; line-height: 1.2; color: #999;"><strong>Keywords:</strong> CogniCare Pro, CogniCare Pro review, buy CogniCare Pro, CogniCare Pro legit, CogniCare Pro 2025, CogniCare Pro memory, CogniCare Pro brain, CogniCare Pro pills, CogniCare Pro price, CogniCare Pro dosage</p>
             </div>
         </div>
     </footer>
@@ -611,5 +619,27 @@
     </div>
 
     <script src="script.js"></script>
+    
+    <!-- Performance optimization script -->
+    <script>
+        // Load non-critical resources asynchronously
+        function loadAsyncResource(href, type) {
+            if (type === 'css') {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = href;
+                link.media = 'print';
+                link.onload = function() { this.media = 'all'; };
+                document.head.appendChild(link);
+            }
+        }
+        
+        // Load Font Awesome asynchronously after page load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                loadAsyncResource('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css', 'css');
+            }, 1000);
+        });
+    </script>
 </body>
 </html>

@@ -1,28 +1,15 @@
-// CogniCare Pro Review - JavaScript Mínimo
-// Foco em funcionalidades essenciais para SEO e UX
-
+// Optimized JavaScript for CogniCare Pro Review Site
 document.addEventListener('DOMContentLoaded', function() {
-    
     // Modal functionality
     const modal = document.getElementById('welcomeModal');
     const modalClose = document.querySelector('.modal-close');
-    const stayReviewBtn = document.querySelector('.modal-btn.read-review');
-    const goOfficialBtn = document.querySelector('.modal-btn.official-page');
-    
-    console.log('Modal elements found:', {
-        modal: !!modal,
-        modalClose: !!modalClose,
-        stayReviewBtn: !!stayReviewBtn,
-        goOfficialBtn: !!goOfficialBtn
-    });
+    const stayReviewBtn = document.querySelector('.read-review');
+    const goOfficialBtn = document.querySelector('.official-page');
     
     // Show modal when page loads (with small delay for better UX)
     setTimeout(() => {
         if (modal) {
-            console.log('Showing modal...');
             modal.classList.add('show');
-        } else {
-            console.log('Modal not found!');
         }
     }, 500);
     
@@ -45,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close modal when clicking outside (overlay)
     if (modal) {
         modal.addEventListener('click', function(e) {
-            if (e.target === modal || e.target.classList.contains('modal-overlay')) {
+            if (e.target === modal) { // Check if click is directly on the modal overlay
                 closeModal();
             }
         });
@@ -75,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Close modal with Escape key
+    // Close modal with ESC key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
             closeModal();
@@ -96,21 +83,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     block: 'start'
                 });
             }
-        });
+        }, { passive: false });
     });
 
-    // Lazy loading para imagens (fallback para browsers mais antigos)
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        img.addEventListener('load', function() {
-            this.style.opacity = '1';
+    // Optimized lazy loading for images
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.style.opacity = '1';
+                    observer.unobserve(img);
+                }
+            });
         });
         
-        // Se a imagem já foi carregada
-        if (img.complete) {
-            img.style.opacity = '1';
-        }
-    });
+        images.forEach(img => {
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease';
+            imageObserver.observe(img);
+        });
+    }
 
     // Tracking de cliques nos botões CTA (para analytics)
     const ctaButtons = document.querySelectorAll('.cta-button');
@@ -128,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Let the link work normally
-        });
+        }, { passive: true });
     });
 
     // Make CogniCare text spans clickable
@@ -148,121 +142,39 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Open affiliate link
             window.open('https://1caa6dp7s7w17v87r6yhp-67c5.hop.clickbank.net', '_blank');
-        });
+        }, { passive: true });
     });
 
-    // Highlight da seção ativa no TOC (scroll spy simples)
+    // Optimized scroll spy for TOC
     const sections = document.querySelectorAll('.content-section');
     const tocLinks = document.querySelectorAll('.table-of-contents a');
     
-    function updateActiveSection() {
-        let current = '';
+    if (sections.length && tocLinks.length) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Remove active class from all links
+                    tocLinks.forEach(link => link.classList.remove('active'));
+                    
+                    // Add active class to corresponding link
+                    const activeLink = document.querySelector(`.table-of-contents a[href="#${entry.target.id}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                    }
+                }
+            });
+        }, { 
+            rootMargin: '-20% 0px -70% 0px',
+            threshold: 0.1
+        });
         
         sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.offsetHeight;
-            
-            if (window.pageYOffset >= sectionTop && 
-                window.pageYOffset < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        tocLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === '#' + current) {
-                link.classList.add('active');
-            }
+            observer.observe(section);
         });
     }
-
-    // Throttled scroll event para performance
-    let scrollTimeout;
-    window.addEventListener('scroll', function() {
-        if (scrollTimeout) {
-            clearTimeout(scrollTimeout);
-        }
-        scrollTimeout = setTimeout(updateActiveSection, 10);
-    });
-
-    // Inicializar highlight ativo
-    updateActiveSection();
-
-    // Adicionar classe CSS para link ativo
-    const style = document.createElement('style');
-    style.textContent = `
-        .table-of-contents a.active {
-            background: #667eea;
-            color: white;
-            transform: translateX(5px);
-        }
-    `;
-    document.head.appendChild(style);
-
-    // Melhorar acessibilidade - foco visível
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-            document.body.classList.add('keyboard-navigation');
-        }
-    });
-
-    document.addEventListener('mousedown', function() {
-        document.body.classList.remove('keyboard-navigation');
-    });
-
-    // Adicionar estilos para navegação por teclado
-    const keyboardStyle = document.createElement('style');
-    keyboardStyle.textContent = `
-        .keyboard-navigation *:focus {
-            outline: 2px solid #667eea !important;
-            outline-offset: 2px !important;
-        }
-    `;
-    document.head.appendChild(keyboardStyle);
-
-    // Performance: Preload de imagens críticas
-    function preloadCriticalImages() {
-        const criticalImages = [
-            'images/CogniCare Pro.webp',
-            'images/i-green-coffee.jpg',
-            'images/i-tyrosine.jpg',
-            'images/i-bacopa.jpg'
-        ];
-        
-        criticalImages.forEach(src => {
-            const link = document.createElement('link');
-            link.rel = 'preload';
-            link.as = 'image';
-            link.href = src;
-            document.head.appendChild(link);
-        });
-    }
-
-    preloadCriticalImages();
-
-    // Adicionar meta tags dinâmicas para SEO (se necessário)
-    function updateMetaTags() {
-        // Você pode adicionar meta tags dinâmicas aqui se necessário
-        const currentTime = new Date().toISOString();
-        
-        // Exemplo: atualizar timestamp da página
-        const metaUpdated = document.querySelector('meta[name="updated"]');
-        if (!metaUpdated) {
-            const meta = document.createElement('meta');
-            meta.name = 'updated';
-            meta.content = currentTime;
-            document.head.appendChild(meta);
-        }
-    }
-
-    updateMetaTags();
-
-    // Console log for debug (remove in production)
-    console.log('CogniCare Pro Review Page loaded successfully');
-    console.log('Ready for affiliate link integration');
 });
 
-// Funções globais para o HTML
+// Global functions for HTML onclick attributes (for direct calls from HTML)
 function closeWelcomeModal() {
     const modal = document.getElementById('welcomeModal');
     if (modal) {
@@ -273,4 +185,12 @@ function closeWelcomeModal() {
     }
 }
 
-// All affiliate links are now directly embedded in the HTML
+// Function to handle conversion tracking and redirection
+function trackAndRedirect(url) {
+    if (typeof gtag_report_conversion === 'function') {
+        gtag_report_conversion(url);
+    } else {
+        console.warn('gtag_report_conversion is not defined. Opening URL directly.');
+        window.open(url, '_blank');
+    }
+}
